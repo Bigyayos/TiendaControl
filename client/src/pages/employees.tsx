@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { EmployeeForm } from "@/components/forms/employee-form";
@@ -193,6 +193,9 @@ export default function Employees() {
               <DialogTitle>
                 {selectedEmployee ? 'Editar' : 'Nuevo'} Empleado
               </DialogTitle>
+              <DialogDescription>
+                {selectedEmployee ? 'Modifica los datos del empleado seleccionado.' : 'Completa la información para crear un nuevo empleado.'}
+              </DialogDescription>
             </DialogHeader>
             <EmployeeForm
               employee={selectedEmployee}

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, Eye, MapPin, User, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { StoreForm } from "@/components/forms/store-form";
 import { useToast } from "@/hooks/use-toast";
@@ -152,6 +152,9 @@ export default function Stores() {
               <DialogTitle>
                 {selectedStore ? 'Editar' : 'Nueva'} Tienda
               </DialogTitle>
+              <DialogDescription>
+                {selectedStore ? 'Modifica los datos de la tienda seleccionada.' : 'Completa la información para crear una nueva tienda.'}
+              </DialogDescription>
             </DialogHeader>
             <StoreForm
               store={selectedStore ? {
@@ -263,6 +266,9 @@ export default function Stores() {
               <Eye className="mr-2 text-pink-600" size={20} />
               Detalles de {viewStore?.name}
             </DialogTitle>
+            <DialogDescription>
+              Información detallada de la tienda y su rendimiento actual.
+            </DialogDescription>
           </DialogHeader>
           
           {viewStore && (
