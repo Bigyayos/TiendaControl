@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, Users, UserCheck, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { EmployeeForm } from "@/components/forms/employee-form";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Employee, InsertEmployee, Store } from "@shared/schema";
+import { useEmployees, useStores, useSales, type Employee, type Store } from "@/hooks/use-supabase";
+import { supabase } from "@/lib/supabase";
 
 export default function Employees() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>();
@@ -19,25 +19,31 @@ export default function Employees() {
   const [filterStore, setFilterStore] = useState<string>("");
   const [filterRole, setFilterRole] = useState<string>("");
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const { data: employees = [], isLoading } = useQuery({
-    queryKey: ['/api/employees'],
-  });
-
-  const { data: stores = [] } = useQuery({
-    queryKey: ['/api/stores'],
-  });
-
-  const { data: sales = [] } = useQuery({
-    queryKey: ['/api/sales'],
-  });
+  const { data: employees = [], isLoading } = useEmployees();
+  const { data: stores = [] } = useStores();
+  const { data: sales = [] } = useSales();
 
   const createEmployeeMutation = useMutation({
-    mutationFn: async (data: InsertEmployee) => {
-      await apiRequest('POST', '/api/employees', data);
+    mutationFn: async (data: any) => {
+      const { data: newEmployee, error } = await supabase
+        .from('Empleados')
+        .insert({
+          nombre: data.name,
+          email: data.email,
+          rol: data.role,
+          tienda_id: data.storeId,
+          activo: data.isActive
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return newEmployee;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/employees'] });
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
       setIsFormOpen(false);
       setSelectedEmployee(undefined);
       toast({
@@ -55,12 +61,26 @@ export default function Employees() {
   });
 
   const updateEmployeeMutation = useMutation({
-    mutationFn: async (data: InsertEmployee) => {
+    mutationFn: async (data: any) => {
       if (!selectedEmployee) throw new Error('No employee selected');
-      await apiRequest('PUT', `/api/employees/${selectedEmployee.id}`, data);
+      const { data: updatedEmployee, error } = await supabase
+        .from('Empleados')
+        .update({
+          nombre: data.name,
+          email: data.email,
+          rol: data.role,
+          tienda_id: data.storeId,
+          activo: data.isActive
+        })
+        .eq('id', selectedEmployee.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return updatedEmployee;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/employees'] });
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
       setIsFormOpen(false);
       setSelectedEmployee(undefined);
       toast({
@@ -79,10 +99,15 @@ export default function Employees() {
 
   const deleteEmployeeMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest('DELETE', `/api/employees/${id}`);
+      const { error } = await supabase
+        .from('Empleados')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/employees'] });
+      queryClient.invalidateQueries({ queryKey: ['employees'] });
       toast({
         title: "Éxito",
         description: "Empleado eliminado correctamente",
@@ -97,7 +122,7 @@ export default function Employees() {
     },
   });
 
-  const handleSubmit = (data: InsertEmployee) => {
+  const handleSubmit = (data: any) => {
     if (selectedEmployee) {
       updateEmployeeMutation.mutate(data);
     } else {
