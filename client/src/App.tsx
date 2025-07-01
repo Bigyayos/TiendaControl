@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useMobileMenu } from "@/hooks/use-mobile-menu";
 import { ConnectionError } from "@/components/ui/connection-error";
+import { debugEnvironmentVariables } from "@/lib/debug-env";
 import Dashboard from "@/pages/dashboard";
 import Stores from "@/pages/stores";
 import Sales from "@/pages/sales";
@@ -31,6 +32,9 @@ function Router() {
 
 function App() {
   const { isOpen, toggle, close } = useMobileMenu();
+  
+  // Debug de variables de entorno
+  debugEnvironmentVariables();
   
   // Verificar si las variables de entorno están configuradas
   const hasSupabaseConfig = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
