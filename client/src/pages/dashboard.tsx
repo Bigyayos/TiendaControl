@@ -1,39 +1,55 @@
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Euro, TrendingUp, Target, Store, Users, Clock } from "lucide-react";
 import { SalesChart } from "@/components/charts/sales-chart";
 import { StoreChart } from "@/components/charts/store-chart";
+import { useStores, useSales } from "@/hooks/use-supabase";
 
 export default function Dashboard() {
-  const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ['/api/dashboard/stats'],
-  });
+  const { data: stores = [], isLoading: storesLoading } = useStores();
+  const { data: sales = [], isLoading: salesLoading } = useSales();
+  
+  const isLoading = storesLoading || salesLoading;
 
-  const { data: stores = [] } = useQuery({
-    queryKey: ['/api/stores'],
-  });
+  // Calculate stats from real data
+  const today = new Date();
+  const todaySales = sales
+    .filter(sale => new Date(sale.date).toDateString() === today.toDateString())
+    .reduce((sum, sale) => sum + sale.amount, 0);
 
-  const { data: sales = [] } = useQuery({
-    queryKey: ['/api/sales'],
-  });
+  const weekSales = sales
+    .filter(sale => {
+      const saleDate = new Date(sale.date);
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return saleDate >= weekAgo;
+    })
+    .reduce((sum, sale) => sum + sale.amount, 0);
+
+  const monthSales = sales
+    .filter(sale => {
+      const saleDate = new Date(sale.date);
+      return saleDate.getMonth() === today.getMonth() && 
+             saleDate.getFullYear() === today.getFullYear();
+    })
+    .reduce((sum, sale) => sum + sale.amount, 0);
+
+  const activeStores = stores.filter(store => store.isActive).length;
+  const totalStores = stores.length;
 
   // Prepare chart data with real store performance
-  const salesChartData = [
-    { name: 'Ayala', ventas: 5780, objetivos: 35000 },
-    { name: 'San Sebastian', ventas: 3170, objetivos: 28000 },
-    { name: 'Sevilla', ventas: 3450, objetivos: 30000 },
-    { name: 'Málaga', ventas: 1300, objetivos: 25000 },
-    { name: 'Marbella', ventas: 1100, objetivos: 22000 },
-    { name: 'Doha', ventas: 6150, objetivos: 32000 },
-    { name: 'Perú', ventas: 2650, objetivos: 26000 },
-  ];
+  const salesChartData = stores.map(store => ({
+    name: store.name,
+    ventas: sales
+      .filter(sale => sale.storeId === store.id)
+      .reduce((sum, sale) => sum + sale.amount, 0),
+    objetivos: parseFloat(String(store.monthlyObjective || 0))
+  }));
 
   const storeChartData = stores.map((store: any) => ({
     name: store.name,
-    value: parseFloat(store.monthlyObjective || 0),
+    value: parseFloat(String(store.monthlyObjective || 0)),
   }));
 
-  if (statsLoading) {
+  if (isLoading) {
     return (
       <div className="p-6">
         <div className="animate-pulse space-y-6">
@@ -63,7 +79,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Ventas Hoy</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  €{stats?.todaysSales?.toLocaleString() || '0'}
+                  €{todaySales.toLocaleString()}
                 </p>
                 <p className="text-sm text-success">+12% vs ayer</p>
               </div>
@@ -80,7 +96,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Ventas Semana</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  €{stats?.weekSales?.toLocaleString() || '0'}
+                  €{weekSales.toLocaleString()}
                 </p>
                 <p className="text-sm text-success">+8% vs anterior</p>
               </div>
@@ -97,7 +113,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Ventas Mes</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  €{stats?.monthSales?.toLocaleString() || '0'}
+                  €{monthSales.toLocaleString()}
                 </p>
                 <p className="text-sm text-warning">74% completado</p>
               </div>
@@ -114,9 +130,9 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Tiendas Activas</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats?.activeStores || 0}
+                  {activeStores}
                 </p>
-                <p className="text-sm text-gray-500">De {stats?.totalStores || 0} total</p>
+                <p className="text-sm text-gray-500">De {totalStores} total</p>
               </div>
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Store className="text-purple-600" size={20} />
