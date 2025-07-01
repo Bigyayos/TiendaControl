@@ -2,13 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Euro, TrendingUp, Target, Store, Users, Clock } from "lucide-react";
 import { SalesChart } from "@/components/charts/sales-chart";
 import { StoreChart } from "@/components/charts/store-chart";
-import { useStores, useSales } from "@/hooks/use-supabase";
+import { useStores, useSales, useObjectives } from "@/hooks/use-supabase";
 
 export default function Dashboard() {
   const { data: stores = [], isLoading: storesLoading } = useStores();
   const { data: sales = [], isLoading: salesLoading } = useSales();
+  const { data: objectives = [], isLoading: objectivesLoading } = useObjectives();
   
-  const isLoading = storesLoading || salesLoading;
+  const isLoading = storesLoading || salesLoading || objectivesLoading;
 
   // Calculate stats from real data
   const today = new Date();
@@ -35,18 +36,26 @@ export default function Dashboard() {
   const activeStores = stores.filter(store => store.isActive).length;
   const totalStores = stores.length;
 
-  // Prepare chart data with real store performance
+  // Obtener objetivo mensual real de la tabla Objetivos para cada tienda
+  const getMonthlyObjective = (storeId: number) => {
+    const obj = objectives.find(
+      (o) => o.storeId === storeId && o.period === "mensual"
+    );
+    return obj ? obj.target : 0;
+  };
+
+  // Prepare chart data with real store performance y objetivos reales
   const salesChartData = stores.map(store => ({
     name: store.name,
     ventas: sales
       .filter(sale => sale.storeId === store.id)
       .reduce((sum, sale) => sum + sale.amount, 0),
-    objetivos: parseFloat(String(store.monthlyObjective || 0))
+    objetivos: getMonthlyObjective(store.id)
   }));
 
   const storeChartData = stores.map((store: any) => ({
     name: store.name,
-    value: parseFloat(String(store.monthlyObjective || 0)),
+    value: getMonthlyObjective(store.id),
   }));
 
   if (isLoading) {
