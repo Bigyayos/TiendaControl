@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { useStores, useEmployees, useSales, useObjectives } from "@/hooks/use-supabase";
 import type { Store, Employee, Sale, Objective } from "@shared/schema";
 
 export default function Reports() {
@@ -18,21 +19,11 @@ export default function Reports() {
   const [reportGenerated, setReportGenerated] = useState(false);
   const { toast } = useToast();
 
-  const { data: stores = [] } = useQuery({
-    queryKey: ['/api/stores'],
-  });
-
-  const { data: employees = [] } = useQuery({
-    queryKey: ['/api/employees'],
-  });
-
-  const { data: sales = [] } = useQuery({
-    queryKey: ['/api/sales'],
-  });
-
-  const { data: objectives = [] } = useQuery({
-    queryKey: ['/api/objectives'],
-  });
+  // Usar hooks reales de Supabase
+  const { data: stores = [] } = useStores();
+  const { data: employees = [] } = useEmployees();
+  const { data: sales = [] } = useSales();
+  const { data: objectives = [] } = useObjectives();
 
   // Generate report data based on filters
   const generateReportData = () => {
@@ -60,7 +51,7 @@ export default function Reports() {
     }
 
     // Filter sales by period and store
-    const filteredSales = sales.filter((sale: Sale) => {
+    const filteredSales = sales.filter((sale) => {
       const saleDate = new Date(sale.date);
       const matchesPeriod = saleDate >= startDate;
       const matchesStore = !reportStore || reportStore === "all" || sale.storeId.toString() === reportStore;
@@ -76,15 +67,15 @@ export default function Reports() {
     
     if (reportType === "sales") {
       // Group sales by week for the chart
-      const weeklyData: { [key: string]: number } = {};
+      const weeklyData: Record<string, number> = {};
       
-      filteredSales.forEach((sale: Sale) => {
+      filteredSales.forEach((sale) => {
         const saleDate = new Date(sale.date);
         const weekStart = new Date(saleDate);
         weekStart.setDate(saleDate.getDate() - saleDate.getDay());
         const weekKey = `Sem ${Math.ceil(weekStart.getDate() / 7)}`;
         
-        weeklyData[weekKey] = (weeklyData[weekKey] || 0) + parseFloat(sale.amount);
+        weeklyData[weekKey] = (weeklyData[weekKey] || 0) + Number(sale.amount);
       });
 
       return Object.entries(weeklyData).map(([week, amount]) => ({
@@ -99,26 +90,26 @@ export default function Reports() {
   // Get top performers
   const getTopPerformers = () => {
     const filteredSales = generateReportData();
-    const employeeSales: { [key: number]: number } = {};
+    const employeeSales: Record<number, number> = {};
 
-    filteredSales.forEach((sale: Sale) => {
+    filteredSales.forEach((sale) => {
       if (sale.employeeId) {
-        employeeSales[sale.employeeId] = (employeeSales[sale.employeeId] || 0) + parseFloat(sale.amount);
+        employeeSales[sale.employeeId] = (employeeSales[sale.employeeId] || 0) + Number(sale.amount);
       }
     });
 
     const topPerformers = Object.entries(employeeSales)
       .map(([employeeId, totalSales]) => {
-        const employee = employees.find((emp: Employee) => emp.id === parseInt(employeeId));
-        const store = stores.find((store: Store) => store.id === employee?.storeId);
+        const employee = employees.find((emp) => emp.id === parseInt(employeeId));
+        const store = stores.find((store) => store.id === employee?.storeId);
         return {
           id: parseInt(employeeId),
           name: employee?.name || 'Empleado desconocido',
           store: store?.name || 'Tienda desconocida',
-          sales: totalSales,
+          sales: Number(totalSales),
         };
       })
-      .sort((a, b) => b.sales - a.sales)
+      .sort((a, b) => (b.sales as number) - (a.sales as number))
       .slice(0, 3);
 
     return topPerformers;
@@ -133,7 +124,7 @@ export default function Reports() {
       description: `Generando archivo ${format.toUpperCase()}...`,
     });
     
-    // In a real application, this would trigger a download
+    // En una app real, esto dispararía la descarga
     setTimeout(() => {
       toast({
         title: "Reporte exportado",
@@ -148,7 +139,7 @@ export default function Reports() {
 
   const getStoreName = (storeId: string) => {
     if (!storeId || storeId === "all") return "Todas las tiendas";
-    const store = stores.find((s: Store) => s.id.toString() === storeId);
+    const store = stores.find((s) => s.id.toString() === storeId);
     return store?.name || "Tienda desconocida";
   };
 
@@ -160,7 +151,7 @@ export default function Reports() {
       description: `Procesando datos de ${reportType} para ${getStoreName(reportStore)}...`,
     });
 
-    // Simulate report generation
+    // Simular generación de reporte
     setTimeout(() => {
       setIsGenerating(false);
       setReportGenerated(true);
@@ -231,7 +222,7 @@ export default function Reports() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas las tiendas</SelectItem>
-                  {stores.map((store: Store) => (
+                  {stores.map((store) => (
                     <SelectItem key={store.id} value={store.id.toString()}>
                       {store.name}
                     </SelectItem>
