@@ -59,13 +59,13 @@ export function useStores() {
       
       return data.map(row => ({
         id: row.id,
-        name: row.nombre || row.name,
-        address: row.direccion || row.address,
-        manager: row.gerente || row.manager || 'Por asignar',
-        employees: row.empleados || row.employees || 0,
-        isActive: row.activa || row.is_active || row.isActive,
-        monthlyObjective: row.objetivo_mensual || row.monthly_objective || row.monthlyObjective || '0',
-        createdAt: row.created_at || row.createdAt
+        name: row.nombre,
+        address: row.direccion,
+        manager: row.telefono || 'Por asignar',
+        employees: 0, // No disponible en la BD
+        isActive: row.activa,
+        monthlyObjective: '0', // No disponible en la BD
+        createdAt: row.created_at
       }));
     }
   });
@@ -85,13 +85,13 @@ export function useStore(id: number) {
       
       return {
         id: data.id,
-        name: data.nombre || data.name,
-        address: data.direccion || data.address,
-        manager: data.gerente || data.manager || 'Por asignar',
-        employees: data.empleados || data.employees || 0,
-        isActive: data.activa || data.is_active || data.isActive,
-        monthlyObjective: data.objetivo_mensual || data.monthly_objective || data.monthlyObjective || '0',
-        createdAt: data.created_at || data.createdAt
+        name: data.nombre,
+        address: data.direccion,
+        manager: data.telefono || 'Por asignar',
+        employees: 0, // No disponible en la BD
+        isActive: data.activa,
+        monthlyObjective: '0', // No disponible en la BD
+        createdAt: data.created_at
       };
     },
     enabled: !!id
@@ -117,12 +117,12 @@ export function useEmployees() {
       
       return data.map(row => ({
         id: row.id,
-        name: row.nombre || row.name,
+        name: `${row.nombre} ${row.apellidos}`,
         email: row.email,
-        role: row.rol || row.role,
-        storeId: row.tienda_id || row.store_id,
-        isActive: row.activo || row.is_active || row.isActive,
-        createdAt: row.created_at || row.createdAt
+        role: row.rol,
+        storeId: row.tienda_id,
+        isActive: row.activo,
+        createdAt: row.created_at
       }));
     }
   });
@@ -161,7 +161,7 @@ export function useSales() {
 export function useObjectives() {
   return useQuery({
     queryKey: ['objectives'],
-    queryFn: async (): Promise<Objective[]> => {
+    queryFn: async (): Promise<any[]> => {
       const { data, error } = await supabase
         .from('Objetivos')
         .select('*')
@@ -176,10 +176,13 @@ export function useObjectives() {
       
       return data.map(row => ({
         id: row.id,
-        storeId: row.tienda_id || row.store_id,
-        target: row.objetivo || row.target,
-        month: row.mes || row.month,
-        createdAt: row.created_at || row.createdAt
+        storeId: row.tienda_id,
+        period: row.tipo,
+        target: Number(row.monto),
+        startDate: row.fecha_inicio,
+        endDate: row.fecha_fin,
+        isActive: row.activo,
+        createdAt: row.created_at
       }));
     }
   });

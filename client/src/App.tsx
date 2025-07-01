@@ -10,8 +10,8 @@ import { ConnectionError } from "@/components/ui/connection-error";
 import Dashboard from "@/pages/dashboard";
 import Stores from "@/pages/stores";
 import Sales from "@/pages/sales";
-import Objectives from "@/pages/objectives";
-import Employees from "@/pages/employees";
+import Objectives from "@/pages/objectives-simple";
+import Employees from "@/pages/employees-simple";
 import Reports from "@/pages/reports";
 import NotFound from "@/pages/not-found";
 

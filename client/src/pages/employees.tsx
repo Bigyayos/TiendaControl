@@ -30,7 +30,8 @@ export default function Employees() {
       const { data: newEmployee, error } = await supabase
         .from('Empleados')
         .insert({
-          nombre: data.name,
+          nombre: data.name.split(' ')[0] || data.name,
+          apellidos: data.name.split(' ').slice(1).join(' ') || '',
           email: data.email,
           rol: data.role,
           tienda_id: data.storeId,
@@ -66,7 +67,8 @@ export default function Employees() {
       const { data: updatedEmployee, error } = await supabase
         .from('Empleados')
         .update({
-          nombre: data.name,
+          nombre: data.name.split(' ')[0] || data.name,
+          apellidos: data.name.split(' ').slice(1).join(' ') || '',
           email: data.email,
           rol: data.role,
           tienda_id: data.storeId,

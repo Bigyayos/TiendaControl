@@ -32,8 +32,11 @@ export default function Objectives() {
         .from('Objetivos')
         .insert({
           tienda_id: data.storeId,
-          objetivo: data.target,
-          mes: data.month
+          tipo: data.month,
+          monto: data.target,
+          fecha_inicio: new Date().toISOString().split('T')[0],
+          fecha_fin: new Date().toISOString().split('T')[0],
+          activo: true
         })
         .select()
         .single();
@@ -64,8 +67,11 @@ export default function Objectives() {
         .from('Objetivos')
         .update({
           tienda_id: data.storeId,
-          objetivo: data.target,
-          mes: data.month
+          tipo: data.month,
+          monto: data.target,
+          fecha_inicio: new Date().toISOString().split('T')[0],
+          fecha_fin: new Date().toISOString().split('T')[0],
+          activo: true
         })
         .eq('id', id)
         .select()
