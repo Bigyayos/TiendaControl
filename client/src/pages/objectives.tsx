@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, Calendar, CalendarDays, CalendarRange } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ObjectiveForm } from "@/components/forms/objective-form";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Objective, InsertObjective, Store } from "@shared/schema";
+import { useObjectives, useStores, useSales, type Objective, type Store } from "@/hooks/use-supabase";
+import { supabase } from "@/lib/supabase";
 
 export default function Objectives() {
   const [filterPeriod, setFilterPeriod] = useState<string>("all");
@@ -20,25 +20,29 @@ export default function Objectives() {
   const [editingObjective, setEditingObjective] = useState<Objective | null>(null);
   const [deletingObjective, setDeletingObjective] = useState<Objective | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const { data: objectives = [], isLoading } = useQuery({
-    queryKey: ['/api/objectives'],
-  });
-
-  const { data: stores = [] } = useQuery({
-    queryKey: ['/api/stores'],
-  });
-
-  const { data: sales = [] } = useQuery({
-    queryKey: ['/api/sales'],
-  });
+  const { data: objectives = [], isLoading } = useObjectives();
+  const { data: stores = [] } = useStores();
+  const { data: sales = [] } = useSales();
 
   const createObjectiveMutation = useMutation({
-    mutationFn: async (data: InsertObjective) => {
-      await apiRequest('POST', '/api/objectives', data);
+    mutationFn: async (data: any) => {
+      const { data: newObjective, error } = await supabase
+        .from('Objetivos')
+        .insert({
+          tienda_id: data.storeId,
+          objetivo: data.target,
+          mes: data.month
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return newObjective;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/objectives'] });
+      queryClient.invalidateQueries({ queryKey: ['objectives'] });
       setIsFormOpen(false);
       toast({
         title: "Éxito",
@@ -55,11 +59,23 @@ export default function Objectives() {
   });
 
   const updateObjectiveMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<InsertObjective> }) => {
-      await apiRequest('PUT', `/api/objectives/${id}`, data);
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const { data: updatedObjective, error } = await supabase
+        .from('Objetivos')
+        .update({
+          tienda_id: data.storeId,
+          objetivo: data.target,
+          mes: data.month
+        })
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return updatedObjective;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/objectives'] });
+      queryClient.invalidateQueries({ queryKey: ['objectives'] });
       setEditingObjective(null);
       toast({
         title: "Éxito",
@@ -77,10 +93,15 @@ export default function Objectives() {
 
   const deleteObjectiveMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest('DELETE', `/api/objectives/${id}`);
+      const { error } = await supabase
+        .from('Objetivos')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/objectives'] });
+      queryClient.invalidateQueries({ queryKey: ['objectives'] });
       toast({
         title: "Éxito",
         description: "Objetivo eliminado correctamente",
@@ -95,7 +116,7 @@ export default function Objectives() {
     },
   });
 
-  const handleSubmit = (data: InsertObjective) => {
+  const handleSubmit = (data: any) => {
     if (editingObjective) {
       updateObjectiveMutation.mutate({ id: editingObjective.id, data });
     } else {
