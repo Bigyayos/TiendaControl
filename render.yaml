@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: tiendacontrol
+    env: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        value: https://lmitonmckoomqcorgnkj.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtaXRvbm1ja29vbXFjb3JnbmtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA4NDEzMTAsImV4cCI6MjA2NjQxNzMxMH0.GE1wi7cjCcuf2ZlT9gsxEUR2G7pkkabsCZwRQOJ8Gdo 

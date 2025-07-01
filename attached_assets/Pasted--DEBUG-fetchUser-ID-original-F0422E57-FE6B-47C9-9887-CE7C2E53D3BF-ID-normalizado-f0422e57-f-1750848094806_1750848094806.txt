@@ -1,0 +1,93 @@
+🔍 [DEBUG] fetchUser - ID original: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF, ID normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] fetchUser - ID original: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf, ID normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [ProfileViewModel] Usando ID del usuario autenticado: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] Verificando usuario actual autenticado
+✅ [DEBUG] Usuario autenticado encontrado:
+  - ID: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+  - Email: pramosbana@gmail.com
+  - Created at: 2025-05-23 12:03:15 +0000
+  - Last sign in: 2025-06-25 10:36:53 +0000
+🔍 [DEBUG] ID normalizado a minúsculas: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+nw_connection_copy_connected_local_endpoint_block_invoke [C3] Connection has no local endpoint
+nw_connection_copy_connected_local_endpoint_block_invoke [C3] Connection has no local endpoint
+📊 [DEBUG] Tipo de respuesta de users: Data
+📊 [DEBUG] Contenido de respuesta de users: 104 bytes
+📊 [DEBUG] Respuesta es Data con tamaño: 104
+📊 [DEBUG] Contenido JSON: [{"id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","email":"pramosbana@gmail.com","quick_matches_played":11}]
+✅ [DEBUG] Usuario encontrado en tabla users (Data parsed):
+  - Email: pramosbana@gmail.com
+  - Quick matches played: 11
+🔍 [DEBUG] Verificando partidos completados para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] Verificando partidos completados para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] debugFetchQuickMatchesForUser para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] debugFetchQuickMatchesForUser para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] User ID length: 36
+🔍 [DEBUG] User ID contains spaces: false
+🔍 [DEBUG] User ID is valid UUID: true
+📊 [DEBUG] Respuesta de users: Data
+📊 [DEBUG] Respuesta es Data con tamaño: 78
+📊 [DEBUG] Contenido JSON: [{"id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","email":"pramosbana@gmail.com"}]
+✅ [DEBUG] Usuario encontrado (Data parsed): pramosbana@gmail.com
+📊 [DEBUG] Respuesta de quick_match_players: Data
+❌ [DEBUG] No se pudo parsear la respuesta de quick_match_players
+❌ [DEBUG] Tipo de respuesta: Data
+❌ [DEBUG] Es Data con tamaño: 336
+❌ [DEBUG] Contenido JSON: [{"id":"a08db406-5397-4c02-a504-3b2dfa7a4f2e","match_id":"b6c4499e-5a7e-483b-90d3-b9dd042c675d","user_id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","name":"Pablo Ramos"}, 
+ {"id":"3515f273-789e-4bf9-859a
+❌ [DEBUG] Partido específico NO encontrado
+🔍 [DEBUG] fetchTournamentsForUser para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] fetchTournamentsForUser para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [ProfileViewModel] Cargando partidos para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] fetchQuickMatchesForUser para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] fetchQuickMatchesForUser para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+📊 [DEBUG] Respuesta de quick_match_players: Data
+📊 [DEBUG] Respuesta de quick_match_players es Data con tamaño: 248
+📊 [DEBUG] Contenido JSON de quick_match_players: [{"match_id":"b6c4499e-5a7e-483b-90d3-b9dd042c675d","user_id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","name":"Pablo Ramos"}, 
+ {"match_id":"1f66c4f2-c663-4c74-aa07-7ea698a9cffb","user_id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","name":"Pablo Ramos"}]
+📊 [DEBUG] Datos encontrados en quick_match_players (Data parsed): 2
+  - Match ID: b6c4499e-5a7e-483b-90d3-b9dd042c675d, Name: Pablo Ramos
+  - Match ID: 1f66c4f2-c663-4c74-aa07-7ea698a9cffb, Name: Pablo Ramos
+📊 [DEBUG] IDs de partidos encontrados: ["b6c4499e-5a7e-483b-90d3-b9dd042c675d", "1f66c4f2-c663-4c74-aa07-7ea698a9cffb"]
+📊 [DEBUG] Partidos del usuario: 2
+📊 [DEBUG] Partidos completados: 1
+📊 [DEBUG] Estados de partidos: ["inProgress", "completed"]
+📊 [ProfileViewModel] Total partidos obtenidos: 2
+📊 [ProfileViewModel] Estados de partidos: ["inProgress", "completed"]
+📊 [ProfileViewModel] Partidos completados encontrados: 1
+📊 [ProfileViewModel] Procesando partido 1f66c4f2-c663-4c74-aa07-7ea698a9cffb - jugador: no encontrado
+📊 [ProfileViewModel] Match items creados: 1
+🔍 [DEBUG] fetchQuickMatchesForUser para userId: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] fetchQuickMatchesForUser para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+📊 [DEBUG] Respuesta de quick_match_players: Data
+📊 [DEBUG] Respuesta de quick_match_players es Data con tamaño: 248
+📊 [DEBUG] Contenido JSON de quick_match_players: [{"match_id":"b6c4499e-5a7e-483b-90d3-b9dd042c675d","user_id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","name":"Pablo Ramos"}, 
+ {"match_id":"1f66c4f2-c663-4c74-aa07-7ea698a9cffb","user_id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","name":"Pablo Ramos"}]
+📊 [DEBUG] Datos encontrados en quick_match_players (Data parsed): 2
+  - Match ID: b6c4499e-5a7e-483b-90d3-b9dd042c675d, Name: Pablo Ramos
+  - Match ID: 1f66c4f2-c663-4c74-aa07-7ea698a9cffb, Name: Pablo Ramos
+📊 [DEBUG] IDs de partidos encontrados: ["b6c4499e-5a7e-483b-90d3-b9dd042c675d", "1f66c4f2-c663-4c74-aa07-7ea698a9cffb"]
+📊 [DEBUG] Partidos del usuario: 2
+📊 [DEBUG] Partidos completados: 1
+📊 [DEBUG] Estados de partidos: ["inProgress", "completed"]
+🔍 [ProfileViewModel] Usando ID del usuario autenticado: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] Verificando usuario actual autenticado
+✅ [DEBUG] Usuario autenticado encontrado:
+  - ID: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+  - Email: pramosbana@gmail.com
+  - Created at: 2025-05-23 12:03:15 +0000
+  - Last sign in: 2025-06-25 10:36:53 +0000
+🔍 [DEBUG] ID normalizado a minúsculas: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+📊 [DEBUG] Tipo de respuesta de users: Data
+📊 [DEBUG] Contenido de respuesta de users: 104 bytes
+📊 [DEBUG] Respuesta es Data con tamaño: 104
+📊 [DEBUG] Contenido JSON: [{"id":"f0422e57-fe6b-47c9-9887-ce7c2e53d3bf","email":"pramosbana@gmail.com","quick_matches_played":11}]
+✅ [DEBUG] Usuario encontrado en tabla users (Data parsed):
+  - Email: pramosbana@gmail.com
+  - Quick matches played: 11
+🔍 [DEBUG] Verificando partidos completados para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] Verificando partidos completados para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] debugFetchQuickMatchesForUser para userId: F0422E57-FE6B-47C9-9887-CE7C2E53D3BF
+🔍 [DEBUG] debugFetchQuickMatchesForUser para userId normalizado: f0422e57-fe6b-47c9-9887-ce7c2e53d3bf
+🔍 [DEBUG] User ID length: 36
+🔍 [DEBUG] User ID contains spaces: false
+🔍 [DEBUG] User ID is valid UUID: true
