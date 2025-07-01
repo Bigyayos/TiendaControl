@@ -45,7 +45,6 @@ export function useStores() {
   return useQuery({
     queryKey: ['stores'],
     queryFn: async (): Promise<Store[]> => {
-      console.log('🔍 Debug: Consultando tabla Tiendas...');
       const { data, error } = await supabase
         .from('Tiendas')
         .select('*')
@@ -56,7 +55,7 @@ export function useStores() {
         throw error;
       }
       
-      console.log('✅ Tiendas consultadas exitosamente:', data?.length || 0, 'registros');
+      console.log('✅ Tiendas cargadas:', data?.length || 0, 'registros');
       
       return data.map(row => ({
         id: row.id,
@@ -104,7 +103,6 @@ export function useEmployees() {
   return useQuery({
     queryKey: ['employees'],
     queryFn: async (): Promise<Employee[]> => {
-      console.log('🔍 Debug: Consultando tabla Empleados...');
       const { data, error } = await supabase
         .from('Empleados')
         .select('*')
@@ -115,7 +113,7 @@ export function useEmployees() {
         throw error;
       }
       
-      console.log('✅ Empleados consultados exitosamente:', data?.length || 0, 'registros');
+      console.log('✅ Empleados cargados:', data?.length || 0, 'registros');
       
       return data.map(row => ({
         id: row.id,
@@ -135,7 +133,6 @@ export function useSales() {
   return useQuery({
     queryKey: ['sales'],
     queryFn: async (): Promise<Sale[]> => {
-      console.log('🔍 Debug: Consultando tabla Ventas...');
       const { data, error } = await supabase
         .from('Ventas')
         .select('*')
@@ -146,7 +143,7 @@ export function useSales() {
         throw error;
       }
       
-      console.log('✅ Ventas consultadas exitosamente:', data?.length || 0, 'registros');
+      console.log('✅ Ventas cargadas:', data?.length || 0, 'registros');
       
       return data.map(row => ({
         id: row.id,
@@ -165,7 +162,6 @@ export function useObjectives() {
   return useQuery({
     queryKey: ['objectives'],
     queryFn: async (): Promise<Objective[]> => {
-      console.log('🔍 Debug: Consultando tabla Objetivos...');
       const { data, error } = await supabase
         .from('Objetivos')
         .select('*')
@@ -176,7 +172,7 @@ export function useObjectives() {
         throw error;
       }
       
-      console.log('✅ Objetivos consultados exitosamente:', data?.length || 0, 'registros');
+      console.log('✅ Objetivos cargados:', data?.length || 0, 'registros');
       
       return data.map(row => ({
         id: row.id,
