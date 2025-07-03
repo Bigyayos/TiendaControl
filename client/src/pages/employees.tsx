@@ -27,19 +27,20 @@ export default function Employees() {
 
   const createEmployeeMutation = useMutation({
     mutationFn: async (data: any) => {
+      const payload = {
+        nombre: data.name.split(' ')[0] || data.name,
+        apellidos: data.name.split(' ').slice(1).join(' ') || '',
+        email: data.email,
+        rol: data.role,
+        tienda_id: Number(data.storeId),
+        activo: !!data.isActive
+      };
+      console.log("Datos enviados a Supabase (crear):", payload);
       const { data: newEmployee, error } = await supabase
         .from('Empleados')
-        .insert({
-          nombre: data.name.split(' ')[0] || data.name,
-          apellidos: data.name.split(' ').slice(1).join(' ') || '',
-          email: data.email,
-          rol: data.role,
-          tienda_id: Number(data.storeId),
-          activo: !!data.isActive
-        })
+        .insert(payload)
         .select()
         .single();
-      
       if (error) throw error;
       return newEmployee;
     },
@@ -52,32 +53,34 @@ export default function Employees() {
         description: "Empleado creado correctamente",
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "No se pudo crear el empleado",
+        description: error?.message || "No se pudo crear el empleado",
         variant: "destructive",
       });
+      console.error("Error guardando empleado:", error);
     },
   });
 
   const updateEmployeeMutation = useMutation({
     mutationFn: async (data: any) => {
       if (!selectedEmployee) throw new Error('No employee selected');
+      const payload = {
+        nombre: data.name.split(' ')[0] || data.name,
+        apellidos: data.name.split(' ').slice(1).join(' ') || '',
+        email: data.email,
+        rol: data.role,
+        tienda_id: Number(data.storeId),
+        activo: !!data.isActive
+      };
+      console.log("Datos enviados a Supabase (editar):", payload);
       const { data: updatedEmployee, error } = await supabase
         .from('Empleados')
-        .update({
-          nombre: data.name.split(' ')[0] || data.name,
-          apellidos: data.name.split(' ').slice(1).join(' ') || '',
-          email: data.email,
-          rol: data.role,
-          tienda_id: Number(data.storeId),
-          activo: !!data.isActive
-        })
+        .update(payload)
         .eq('id', selectedEmployee.id)
         .select()
         .single();
-      
       if (error) throw error;
       return updatedEmployee;
     },
@@ -90,12 +93,13 @@ export default function Employees() {
         description: "Empleado actualizado correctamente",
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "No se pudo actualizar el empleado",
+        description: error?.message || "No se pudo actualizar el empleado",
         variant: "destructive",
       });
+      console.error("Error guardando empleado:", error);
     },
   });
 

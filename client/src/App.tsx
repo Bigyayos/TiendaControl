@@ -14,6 +14,9 @@ import Objectives from "@/pages/objectives-simple";
 import Employees from "@/pages/employees-simple";
 import Reports from "@/pages/reports";
 import NotFound from "@/pages/not-found";
+import Login from "@/pages/login";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 
 function Router() {
   return (
@@ -31,9 +34,17 @@ function Router() {
 
 function App() {
   const { isOpen, toggle, close } = useMobileMenu();
+  const [location, setLocation] = useLocation();
   
   // Verificar si las variables de entorno están configuradas
   const hasSupabaseConfig = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  // Proteger rutas
+  useEffect(() => {
+    if (location !== "/login" && localStorage.getItem("isLoggedIn") !== "true") {
+      setLocation("/login");
+    }
+  }, [location, setLocation]);
 
   if (!hasSupabaseConfig) {
     return (
@@ -50,15 +61,19 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <div className="min-h-screen flex bg-gray-50">
-          <Sidebar isOpen={isOpen} onClose={close} />
-          <div className="flex-1 lg:ml-0">
-            <Header onMenuToggle={toggle} />
-            <main className="min-h-[calc(100vh-73px)]">
-              <Router />
-            </main>
+        {location === "/login" ? (
+          <Login />
+        ) : (
+          <div className="min-h-screen flex bg-gray-50">
+            <Sidebar isOpen={isOpen} onClose={close} />
+            <div className="flex-1 lg:ml-0">
+              <Header onMenuToggle={toggle} />
+              <main className="min-h-[calc(100vh-73px)]">
+                <Router />
+              </main>
+            </div>
           </div>
-        </div>
+        )}
       </TooltipProvider>
     </QueryClientProvider>
   );
