@@ -34,8 +34,8 @@ export default function Employees() {
           apellidos: data.name.split(' ').slice(1).join(' ') || '',
           email: data.email,
           rol: data.role,
-          tienda_id: data.storeId,
-          activo: data.isActive
+          tienda_id: Number(data.storeId),
+          activo: !!data.isActive
         })
         .select()
         .single();
@@ -71,8 +71,8 @@ export default function Employees() {
           apellidos: data.name.split(' ').slice(1).join(' ') || '',
           email: data.email,
           rol: data.role,
-          tienda_id: data.storeId,
-          activo: data.isActive
+          tienda_id: Number(data.storeId),
+          activo: !!data.isActive
         })
         .eq('id', selectedEmployee.id)
         .select()

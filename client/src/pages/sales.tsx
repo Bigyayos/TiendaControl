@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { SaleForm } from "@/components/forms/sale-form";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useStores, useEmployees, useSales } from "@/hooks/use-supabase";
 import type { Sale, InsertSale, Store, Employee } from "@shared/schema";
 
 export default function Sales() {
@@ -16,25 +17,14 @@ export default function Sales() {
   const [filterDate, setFilterDate] = useState<string>("");
   const { toast } = useToast();
 
-  const { data: sales = [], isLoading: salesLoading } = useQuery({
-    queryKey: ['/api/sales'],
-  });
-
-  const { data: stores = [] } = useQuery({
-    queryKey: ['/api/stores'],
-  });
-
-  const { data: employees = [] } = useQuery({
-    queryKey: ['/api/employees'],
-  });
+  const { data: sales = [], isLoading: salesLoading } = useSales();
+  const { data: stores = [] } = useStores();
+  const { data: employees = [] } = useEmployees();
 
   const createSaleMutation = useMutation({
     mutationFn: async (data: InsertSale) => {
-      await apiRequest('POST', '/api/sales', data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sales'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      await queryClient.invalidateQueries({ queryKey: ['sales'] });
+      await queryClient.invalidateQueries({ queryKey: ['dashboard/stats'] });
       toast({
         title: "Éxito",
         description: "Venta registrada correctamente",
@@ -51,11 +41,8 @@ export default function Sales() {
 
   const deleteSaleMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest('DELETE', `/api/sales/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sales'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
+      await queryClient.invalidateQueries({ queryKey: ['sales'] });
+      await queryClient.invalidateQueries({ queryKey: ['dashboard/stats'] });
       toast({
         title: "Éxito",
         description: "Venta eliminada correctamente",
